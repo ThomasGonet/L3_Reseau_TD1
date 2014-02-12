@@ -52,7 +52,7 @@ public class Reseau {
 			
 			System.out.println("TTL : " + Integer.parseInt("" + data[16] + data[17], 16));
 			
-			
+			System.out.println("Protocole : " + Integer.parseInt("" + data[18] + data[19], 16));
 			
 			fis.close();
 			sc.close();
