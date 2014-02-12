@@ -52,7 +52,33 @@ public class Reseau {
 			
 			System.out.println("TTL : " + Integer.parseInt("" + data[16] + data[17], 16));
 			
-			System.out.println("Protocole : " + Integer.parseInt("" + data[18] + data[19], 16));
+			int protocole =  Integer.parseInt("" + data[18] + data[19], 16);
+			
+			String str_protocole = null;
+			
+			switch (protocole) {
+			case 1:
+				str_protocole = "ICMP";
+				break;
+			case 2:
+				str_protocole = "IGMP";
+				break;
+			case 6:
+				str_protocole = "TCP";
+				break;
+			case 17:
+				str_protocole = "UDP";
+				break;
+				
+			default:
+				str_protocole = "inconnu";
+				break;
+			}
+			
+			System.out.println("Protocole : " + protocole + " (" + str_protocole + ")");
+			
+			
+			
 			
 			fis.close();
 			sc.close();
