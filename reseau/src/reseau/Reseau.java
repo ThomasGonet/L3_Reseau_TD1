@@ -21,10 +21,10 @@ public class Reseau {
 			
 			data = dataGram.toCharArray();
 			
-			int ihl = (Character.getNumericValue(data[1]))*4;
+			int ihl = (Character.getNumericValue(data[1]))*32;
 			
 			System.out.println("Version ip : " + data[0]);
-			System.out.println("Longueur de l'entete (en bit) : " + ihl );
+			System.out.println("Longueur de l'entete (en bits) : " + ihl );
 			
 			String ln = "" + data[4] + data[5] + data[6] + data[7];
 			
@@ -32,7 +32,7 @@ public class Reseau {
 			
 			System.out.println("Longueur totale du datagramme (en octet(s)) : " + lnt);
 			
-			System.out.println("Longueur déduite du champ de données (en octet(s)) : " +  (lnt - (ihl / 4)) );
+			System.out.println("Longueur déduite du champ de données (en octet(s)) : " +  (lnt - (ihl / 8)) );
 			
 			String id = "" + data[8] + data[9] + data[10] + data[11];
 			
@@ -77,8 +77,47 @@ public class Reseau {
 			
 			System.out.println("Protocole : " + protocole + " (" + str_protocole + ")");
 			
+			int checksum =  Integer.parseInt("" + data[20] + data[21] + data[22] + data[23], 16);
 			
+			System.out.println("Somme de contrôle : " + checksum);
 			
+			int as1 = Integer.parseInt("" + data[24] + data[25], 16);
+			int as2 = Integer.parseInt("" + data[26] + data[27], 16);
+			int as3 = Integer.parseInt("" + data[28] + data[29], 16);
+			int as4 = Integer.parseInt("" + data[30] + data[31], 16);
+			
+			System.out.println("Adresse source : " + as1 + "." + as2 +"." + as3 +"." + as4 );
+			
+			int ad1 = Integer.parseInt("" + data[32] + data[33], 16);
+			int ad2 = Integer.parseInt("" + data[34] + data[35], 16);
+			int ad3 = Integer.parseInt("" + data[36] + data[37], 16);
+			int ad4 = Integer.parseInt("" + data[38] + data[39], 16);
+			
+			System.out.println("Adresse de destination : " + ad1 + "." + ad2 +"." + ad3 +"." + ad4 );
+			
+			int somme = 0;
+			String datagramme = "";
+			
+			for(int j = 0; j < 40; j++)
+			{
+				if(j == 20 ||j == 21 ||j == 22 ||j == 23)
+					datagramme += "0";
+				else
+					datagramme += data[j];
+			}
+				
+			//System.out.println(Integer.toBinaryString(Integer.parseInt(datagramme,16)));
+			
+			//System.out.println(datagramme);
+			
+			for(int i = 0; i < 40; i += 4){
+					somme += Integer.parseInt(datagramme.substring(i, (i+4)), 16);
+					somme = ((somme >> 16) & 0xFFFF) + (somme & 0xFFFF);
+					//System.out.println(somme);
+			}
+			
+			somme =  somme ^0xFFFF;
+			System.out.println("Somme de contrôle calculée : " + somme);
 			
 			fis.close();
 			sc.close();
